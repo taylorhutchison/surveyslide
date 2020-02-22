@@ -6,18 +6,17 @@ using System.Threading.Tasks;
 using Microsoft.Azure.Documents;
 using Microsoft.Azure.Documents.Client;
 using Microsoft.Azure.Documents.Linq;
+using Microsoft.Extensions.Configuration;
 
 namespace SurveySlide {
     public class SurveySlideDB<T> {
-        private readonly string Endpoint = "https://surveyslidedb.documents.azure.com:443/";
-        private readonly string Key = "U55xAlLXZ2mBpFL86XIEXf7HPQ8dXb1C2oyNzmZbNkCKfXqAgO0TtW3884LBRtvBNDjHmcofUglLUyQRU8Qvsw==";
         private readonly string DatabaseId = "ToDoList";
         private readonly string CollectionId = "Items";
         private DocumentClient client;
 
-        public SurveySlideDB()
+        public SurveySlideDB(IConfiguration configuration)
         {
-            this.client = new DocumentClient(new Uri(Endpoint), Key);
+            this.client = new DocumentClient(new Uri(configuration["DB:Endpoint"]), configuration["DB:PrimaryKey"]);
             CreateDatabaseIfNotExistsAsync().Wait();
             CreateCollectionIfNotExistsAsync().Wait();
         }
