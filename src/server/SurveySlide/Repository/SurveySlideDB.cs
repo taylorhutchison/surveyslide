@@ -10,22 +10,25 @@ using Microsoft.Extensions.Configuration;
 
 namespace SurveySlide {
     public class SurveySlideDB<T> {
-        private readonly string DatabaseId = "ToDoList";
-        private readonly string CollectionId = "Items";
+        private readonly string DatabaseId = "Survey";
+        private readonly string CollectionId = "Surveys";
         private DocumentClient client;
 
         public SurveySlideDB(IConfiguration configuration)
         {
             this.client = new DocumentClient(new Uri(configuration["DB:Endpoint"]), configuration["DB:PrimaryKey"]);
-            CreateDatabaseIfNotExistsAsync().Wait();
-            CreateCollectionIfNotExistsAsync().Wait();
         }
 
         public async Task<T> GetItemAsync(string id)
         {
             try
             {
-                Document document = await client.ReadDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id));
+                var documentUri = UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id);
+                var requestOptions = new RequestOptions {
+                    PartitionKey = new PartitionKey("1"),
+                    
+                };
+                Document document = await client.ReadDocumentAsync(documentUri, requestOptions);
                 return (T)(dynamic)document;
             }
             catch (DocumentClientException e)
@@ -43,9 +46,10 @@ namespace SurveySlide {
 
         public async Task<IEnumerable<T>> GetItemsAsync(Expression<Func<T, bool>> predicate)
         {
+            try {
             IDocumentQuery<T> query = client.CreateDocumentQuery<T>(
                 UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId),
-                new FeedOptions { MaxItemCount = -1 })
+                new FeedOptions { MaxItemCount = -1, PartitionKey = new PartitionKey("1") })
                 .Where(predicate)
                 .AsDocumentQuery();
 
@@ -56,6 +60,10 @@ namespace SurveySlide {
             }
 
             return results;
+            }
+            catch(Exception ex) {
+                throw;
+            }
         }
 
         public async Task<Document> CreateItemAsync(T item)
@@ -71,47 +79,6 @@ namespace SurveySlide {
         public async Task DeleteItemAsync(string id)
         {
             await client.DeleteDocumentAsync(UriFactory.CreateDocumentUri(DatabaseId, CollectionId, id));
-        }
-
-        private async Task CreateDatabaseIfNotExistsAsync()
-        {
-            try
-            {
-                await client.ReadDatabaseAsync(UriFactory.CreateDatabaseUri(DatabaseId));
-            }
-            catch (DocumentClientException e)
-            {
-                if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
-                {
-                    await client.CreateDatabaseAsync(new Database { Id = DatabaseId });
-                }
-                else
-                {
-                    throw;
-                }
-            }
-        }
-
-        private async Task CreateCollectionIfNotExistsAsync()
-        {
-            try
-            {
-                await client.ReadDocumentCollectionAsync(UriFactory.CreateDocumentCollectionUri(DatabaseId, CollectionId));
-            }
-            catch (DocumentClientException e)
-            {
-                if (e.StatusCode == System.Net.HttpStatusCode.NotFound)
-                {
-                    await client.CreateDocumentCollectionAsync(
-                        UriFactory.CreateDatabaseUri(DatabaseId),
-                        new DocumentCollection { Id = CollectionId },
-                        new RequestOptions { OfferThroughput = 1000 });
-                }
-                else
-                {
-                    throw;
-                }
-            }
         }
     }
 }
