@@ -16,6 +16,8 @@ import { MatInputModule } from '@angular/material/input';
 import { SurveyContainerComponent } from './components/survey-container/survey-container.component';
 import { BarchartComponent } from './components/barchart/barchart.component';
 
+import 'chart.js';
+
 
 @NgModule({
   declarations: [
