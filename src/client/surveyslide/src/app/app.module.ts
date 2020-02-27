@@ -14,6 +14,7 @@ import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { SurveyContainerComponent } from './components/survey-container/survey-container.component';
+import { BarchartComponent } from './components/barchart/barchart.component';
 
 
 @NgModule({
@@ -21,7 +22,8 @@ import { SurveyContainerComponent } from './components/survey-container/survey-c
     AppComponent,
     SlideContainerComponent,
     BannerComponent,
-    SurveyContainerComponent
+    SurveyContainerComponent,
+    BarchartComponent
   ],
   imports: [
     BrowserModule,
