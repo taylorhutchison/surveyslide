@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { FormGroup, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-banner',
@@ -7,13 +8,28 @@ import { Component, OnInit } from '@angular/core';
 })
 export class BannerComponent implements OnInit {
 
+  @Input()
+  slides: any[] = [];
+
+  @Input()
+  surveys: any[] = [];
+
+  @Output()
+  controlsChange = new EventEmitter<any>();
+
   title = 'Survey Slide';
 
-  slides = [ { id: 1, title: 'omg'}, { id: 2, title: 'abc'} ];
+  controls: FormGroup;
 
-  constructor() { }
+  constructor(private fb: FormBuilder) { }
 
   ngOnInit(): void {
+    this.controls = this.fb.group({
+      survey: null,
+      slide: null
+    });
+
+    this.controls.valueChanges.subscribe(change => this.controlsChange.emit(change));
   }
 
 }

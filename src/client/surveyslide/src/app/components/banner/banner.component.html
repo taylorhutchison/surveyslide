@@ -1,13 +1,28 @@
 <mat-toolbar color="primary">
     <mat-toolbar-row>
-      <span>{{title}}</span>
-      <mat-form-field>
-        <mat-label>Slide</mat-label>
-        <mat-select>
-          <mat-option *ngFor="let slide of slides" [value]="slide.id">
-            {{slide.title}}
-          </mat-option>
-        </mat-select>
-      </mat-form-field>
+      <span class="title">
+        <span>{{title}}</span>
+      </span>
+      <span class="controls">
+        <form [formGroup]="controls">
+          <mat-form-field class="surveyOption">
+            <mat-label>Survey</mat-label>
+            <mat-select formControlName="survey">
+              <mat-option *ngFor="let survey of surveys" [value]="survey.id">
+                {{survey.title}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="slideOption">
+            <mat-label>Slide</mat-label>
+            <mat-select formControlName="slide">
+              <mat-option *ngFor="let slide of slides; index as i;" [value]="slide.id">
+                {{i+1}}) {{slide.title}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </form>
+      </span>
+
     </mat-toolbar-row>
 </mat-toolbar>
