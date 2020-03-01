@@ -15,3 +15,10 @@ steps:
     command: 'publish'
     publishWebProjects: false
     projects: 'src/server/SurveySlide'
+    arguments: '-o $(Build.ArtifactStagingDirectory)'
+    zipAfterPublish: false
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
