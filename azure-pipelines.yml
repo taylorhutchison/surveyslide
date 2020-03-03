@@ -10,6 +10,16 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
+- task: Npm@1
+  inputs:
+    command: 'install'
+    workingDir: 'src/client/surveyslide'
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: './node_modules/.bin/ng build --prod'
+    workingDirectory: 'src/client/surveyslide'
+    failOnStderr: true
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
