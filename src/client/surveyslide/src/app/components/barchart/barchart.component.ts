@@ -21,7 +21,7 @@ export class BarchartComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     const ctx = this.canvas.nativeElement.getContext('2d');
     this.chart = new Chart(ctx, {
-      
+
     });
   }
 
