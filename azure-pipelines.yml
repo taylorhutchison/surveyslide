@@ -19,7 +19,7 @@ steps:
     targetType: 'inline'
     script: './node_modules/.bin/ng build --prod'
     workingDirectory: 'src/client/surveyslide'
-    failOnStderr: true
+    failOnStderr: false
 - task: DotNetCoreCLI@2
   inputs:
     command: 'publish'
